@@ -4,9 +4,15 @@ import jsonPlaceHolder from '../apis/jsonPlaceHolder';
 //Alternate method for lodash memoize function
 export const fetchPostsAndUsers = () => async (dispatch, getState) => {
   await dispatch(fetchPosts());
+  // const userIds = _.uniq(_.map(getState().posts, 'userId'));
+  // userIds.forEach(id => dispatch(fetchUser(id)));
 
-  const userIds = _.uniq(_.map(getState().posts, 'userId'));
-  userIds.forEach(id => dispatch(fetchUser(id)));
+  //refactor of getting userIds with lodash
+  _.chain(getState().posts)
+    .map('userId')
+    .uniq()
+    .forEach(id => dispatch(fetchUser(id)))
+    .value();
 };
 
 export const fetchPosts = () => async dispatch => {
